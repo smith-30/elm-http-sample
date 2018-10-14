@@ -33,4 +33,25 @@ module.exports = [
       }
     },
   },
+  {
+    request: {
+      path: '/',
+      method: 'GET',
+    },
+    response: {
+      headers: {
+        'x-csrf-token': 'csrf-token',
+      },
+      body: {
+        message: '{:greeting}',
+        themes: '{:themes}',
+      },
+      values: {
+        greeting: 'hello',
+        themes: {
+          name: 'green',
+        },
+      }
+    },
+  },
 ]
