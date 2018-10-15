@@ -1,8 +1,9 @@
 module Main exposing (Model, Msg(..), init, main, update, view)
 
 import Browser
-import Html exposing (Html, div, h1, img, text)
+import Html exposing (Html, button, div, h1, h3, img, li, text, ul)
 import Html.Attributes exposing (src)
+import Html.Events exposing (onClick)
 import Http
 import Json.Decode as Decode
 
@@ -12,12 +13,12 @@ import Json.Decode as Decode
 
 
 type alias Model =
-    {}
+    List String
 
 
 init : () -> ( Model, Cmd Msg )
 init _ =
-    ( {}, Cmd.none )
+    ( [], Cmd.none )
 
 
 
@@ -25,12 +26,30 @@ init _ =
 
 
 type Msg
-    = NoOp
+    = SendHttpRequest
+    | DataReceived (Result Http.Error String)
+
+
+url : String
+url =
+    "http://localhost:3010"
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
-    ( model, Cmd.none )
+    case msg of
+        SendHttpRequest ->
+            ( model, Http.send DataReceived (Http.getString url) )
+
+        DataReceived (Ok nicknamesStr) ->
+            let
+                nicknames =
+                    String.split "," nicknamesStr
+            in
+            ( nicknames, Cmd.none )
+
+        DataReceived (Err _) ->
+            ( model, Cmd.none )
 
 
 
@@ -40,9 +59,16 @@ update msg model =
 view : Model -> Html Msg
 view model =
     div []
-        [ img [ src "../src/logo.svg" ] []
-        , h1 [] [ text "Your Elm App is working!" ]
+        [ button [ onClick SendHttpRequest ]
+            [ text "Get data from server" ]
+        , h3 [] [ text "Old School Main Characters" ]
+        , ul [] (List.map viewNickname model)
         ]
+
+
+viewNickname : String -> Html Msg
+viewNickname nickname =
+    li [] [ text nickname ]
 
 
 subscriptions : Model -> Sub Msg
