@@ -14,7 +14,7 @@ module.exports = [
     },
     response: {
       headers: {
-        'x-csrf-token': 'csrf-token',
+        'Access-Control-Allow-Origin': '*',
       },
       body: {
         message: '{:greeting} {:id} {:someQueryStrings}',
@@ -40,7 +40,7 @@ module.exports = [
     },
     response: {
       headers: {
-        'x-csrf-token': 'csrf-token',
+        'Access-Control-Allow-Origin': '*',
       },
       body: {
         message: '{:greeting}',
@@ -48,9 +48,7 @@ module.exports = [
       },
       values: {
         greeting: 'hello',
-        themes: {
-          name: 'green',
-        },
+        themes: 'green'
       }
     },
   },
