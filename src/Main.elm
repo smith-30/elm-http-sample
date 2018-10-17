@@ -64,10 +64,29 @@ update msg model =
                     , Cmd.none
                     )
 
-                Err _ ->
-                    ( model
+                Err httpError ->
+                    ( { model | errorMessage = Just (createErrorMessage httpError) }
                     , Cmd.none
                     )
+
+
+createErrorMessage : Http.Error -> String
+createErrorMessage httpError =
+    case httpError of
+        Http.BadUrl message ->
+            message
+
+        Http.Timeout ->
+            "Server is taking too long to respond. Please try again later."
+
+        Http.NetworkError ->
+            "It appears you don't have an Internet connection right now."
+
+        Http.BadStatus response ->
+            response.status.message
+
+        Http.BadPayload message response ->
+            message
 
 
 
@@ -89,8 +108,36 @@ view model =
         [ h2 [] [ text model.topic ]
         , button [ onClick MorePlease ] [ text "More Please!" ]
         , br [] []
-        , img [ src model.url ] []
+        , viewTopicOrError model
         ]
+
+
+viewTopicOrError : Model -> Html Msg
+viewTopicOrError model =
+    case model.errorMessage of
+        Just message ->
+            viewError message
+
+        Nothing ->
+            viewTopic model.topic
+
+
+viewError : String -> Html Msg
+viewError errorMessage =
+    let
+        errorHeading =
+            "Couldn't fetch at this time."
+    in
+    div []
+        [ h3 [] [ text errorHeading ]
+        , text ("Error: " ++ errorMessage)
+        ]
+
+
+viewTopic : String -> Html Msg
+viewTopic topic =
+    div []
+        [ h3 [] [ text topic ] ]
 
 
 
