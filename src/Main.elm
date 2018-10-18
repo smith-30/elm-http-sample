@@ -1,11 +1,11 @@
-module Main exposing (Model, Msg(..), getRandomGif, gifDecoder, init, main, subscriptions, toGiphyUrl, update, view)
+module Main exposing (Model, Msg(..), getRandomGif, init, main, messageDecoder, subscriptions, toGiphyUrl, update, view)
 
 import Browser
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 import Http
-import Json.Decode as Decode
+import Json.Decode exposing (Decoder, field, string)
 import Url.Builder as Url
 
 
@@ -146,7 +146,7 @@ viewTopic topic =
 
 getRandomGif : String -> Cmd Msg
 getRandomGif topic =
-    Http.send NewGif (Http.get (toGiphyUrl topic) gifDecoder)
+    Http.send NewGif (Http.get (toGiphyUrl topic) messageDecoder)
 
 
 toGiphyUrl : String -> String
@@ -154,6 +154,6 @@ toGiphyUrl topic =
     Url.crossOrigin "http://localhost:3010" [] []
 
 
-gifDecoder : Decode.Decoder String
-gifDecoder =
-    Decode.field "" (Decode.field "image_url" Decode.string)
+messageDecoder : Decoder String
+messageDecoder =
+    field "message" string
