@@ -35,7 +35,7 @@ type alias Model =
 
 init : () -> ( Model, Cmd Msg )
 init _ =
-    ( Model "cat" "waiting.gif" (Just "Nothing")
+    ( Model "cat" "waiting.gif" Nothing
     , getRandomGif "cat"
     )
 
@@ -60,7 +60,7 @@ update msg model =
         NewGif result ->
             case result of
                 Ok newUrl ->
-                    ( { model | url = newUrl }
+                    ( { model | url = newUrl, errorMessage = Nothing }
                     , Cmd.none
                     )
 
