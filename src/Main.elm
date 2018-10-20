@@ -108,6 +108,7 @@ view model =
         [ h2 [] [ text model.topic ]
         , button [ onClick MorePlease ] [ text "More Please!" ]
         , br [] []
+        , h2 [] [ text model.url ]
         , viewTopicOrError model
         ]
 
